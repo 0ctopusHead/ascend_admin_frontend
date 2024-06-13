@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <nav class="bg-white border-b border-gray-200 shadow-md dark:bg-gray-90">
+  <!-- <nav class="bg-white border-b border-gray-200 shadow-md dark:bg-gray-90">
     <div class="flex flex-wrap items-center justify-between mx-auto p-4">
       <a class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="/src/assets/ascend.svg" class="h-10" alt="AscendEDU Logo" />
@@ -78,12 +78,24 @@ import { RouterLink, RouterView } from 'vue-router'
         </ul>
       </div>
     </div>
-  </nav>
-
-  <!-- <nav>
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
-    <RouterLink :to="{ name: 'upload' }">Upload</RouterLink>
   </nav> -->
+  <div class="flex">
+    <input type="checkbox" id="drawer-toggle" class="relative sr-only peer" checked />
+    <label
+      for="drawer-toggle"
+      class="absolute top-1/2 left-0 inline-block p-4 rounded-lg transition-all duration-500 peer-checked:rotate-180 peer-checked:left-64 hover:bg-gray-100 hover:cursor-pointer"
+    >
+      <div class="w-6 h-1 mb-3 rotate-45 bg-black rounded-lg"></div>
+      <div class="w-6 h-1 -rotate-45 bg-black rounded-lg"></div>
+    </label>
+    <div
+      class="fixed top-0 left-0 z-20 w-64 h-full transition-all duration-500 transform -translate-x-full bg-white shadow-lg peer-checked:translate-x-0"
+    >
+      <div class="px-6 py-4">
+        <h2 class="text-lg font-semibold">Drawer</h2>
+        <p class="text-gray-500">This is a drawer.</p>
+      </div>
+    </div>
+  </div>
   <RouterView />
 </template>
