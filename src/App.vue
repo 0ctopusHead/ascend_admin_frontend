@@ -91,9 +91,38 @@ import { RouterLink, RouterView } from 'vue-router'
     <div
       class="fixed top-0 left-0 z-20 w-64 h-full transition-all duration-500 transform -translate-x-full bg-white shadow-lg peer-checked:translate-x-0"
     >
-      <div class="px-6 py-4">
-        <h2 class="text-lg font-semibold">Drawer</h2>
-        <p class="text-gray-500">This is a drawer.</p>
+      <div class="flex flex-col items-center justify-center h-full">
+        <ul class="w-full space-y-2 font-medium">
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-house" />
+              <span class="ms-3">Home</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-folder-open" />
+              <span class="ms-3">Upload</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-folder-tree" />
+              <span class="ms-3">File Mangement</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
