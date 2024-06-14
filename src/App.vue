@@ -4,7 +4,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <nav class="bg-white border-b border-gray-200 shadow-md dark:bg-gray-90">
-    <div class="flex flex-wrap items-center justify-between mx-8 p-4">
+    <div class="flex flex-wrap items-center justify-between mx-auto p-4">
       <a class="flex items-center space-x-3 rtl:space-x-reverse">
         <img src="/src/assets/ascend.svg" class="h-10" alt="AscendEDU Logo" />
         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
@@ -54,10 +54,54 @@ import { RouterLink, RouterView } from 'vue-router'
     </div>
   </nav>
 
-  <!-- <nav>
-    <RouterLink to="/">Home</RouterLink>
-    <RouterLink to="/about">About</RouterLink>
-    <RouterLink :to="{ name: 'upload' }">Upload</RouterLink>
-  </nav> -->
+  <!-- Nav bar ended -->
+
+  <div class="flex">
+    <input type="checkbox" id="drawer-toggle" class="relative sr-only peer" checked />
+    <label
+      for="drawer-toggle"
+      class="absolute top-1/2 left-0 inline-block p-4 rounded-lg transition-all duration-500 peer-checked:rotate-180 peer-checked:left-64 hover:bg-gray-100 hover:cursor-pointer"
+    >
+      <div class="w-6 h-1 mb-3 rotate-45 bg-black rounded-lg"></div>
+      <div class="w-6 h-1 -rotate-45 bg-black rounded-lg"></div>
+    </label>
+    <div
+      class="fixed top-0 left-0 z-20 w-64 h-full transition-all duration-500 transform -translate-x-full bg-white shadow-lg peer-checked:translate-x-0"
+    >
+      <div class="flex flex-col items-center justify-center h-full">
+        <ul class="w-full space-y-2 font-medium">
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-house" />
+              <span class="ms-3">Home</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-folder-open" />
+              <span class="ms-3">Upload</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="#"
+              class="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
+            >
+              <font-awesome-icon icon="fa-folder-tree" />
+              <span class="ms-3">File Mangement</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
   <RouterView />
 </template>

@@ -7,7 +7,7 @@
   </div>
 </template>
 <script setup lang="ts"></script>
-<style>
+<style scoped>
 .dropzone {
   width: 400px;
   height: 200px;
