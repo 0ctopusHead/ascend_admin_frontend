@@ -2,11 +2,55 @@
 import { ref } from 'vue'
 
 const isUrlUpload = ref(false)
+const selectedFiles = ref<File[]>([])
+const enteredUrls = ref<string[]>([])
 
 const toggleUploadMethod = (method: boolean) => {
   isUrlUpload.value = method
-  console.log(isUrlUpload.value)
 }
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    selectedFiles.value.push(...Array.from(target.files))
+  }
+}
+
+const handleUrlChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  enteredUrls.value = target.value.split(',').map((url) => url.trim())
+}
+
+const handleDrop = (event: DragEvent) => {
+  event.preventDefault()
+  if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+    selectedFiles.value.push(...Array.from(event.dataTransfer.files))
+  }
+}
+
+const handleDragOver = (event: DragEvent) => {
+  event.preventDefault()
+}
+
+const handleSubmit = () => {
+  if (!isUrlUpload.value && selectedFiles.value.length > 0) {
+    console.log('Files submitted:', selectedFiles.value)
+    // Handle file submission logic here
+  } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
+    console.log('URLs submitted:', enteredUrls.value)
+    // Handle URL submission logic here
+  } else {
+    console.log('No valid input to submit')
+  }
+}
+
+const removeFile = (file: File) => {
+  selectedFiles.value = selectedFiles.value.filter((f) => f !== file)
+}
+
+// const removeUrl = (url: string) => {
+//   enteredUrls.value = enteredUrls.value.filter((u) => u !== url)
+// }
 </script>
 
 <template>
@@ -23,44 +67,76 @@ const toggleUploadMethod = (method: boolean) => {
         <button
           :class="{ 'bg-rose-500 text-white': isUrlUpload, 'bg-gray-200 text-black': !isUrlUpload }"
           class="w-1/2 py-2"
-          @click="toggleUploadMethod(true)"
+          @click.prevent="toggleUploadMethod(true)"
         >
           Web Address (URL)
         </button>
       </div>
-      <div v-if="!isUrlUpload" class="dropzone-container">
-        <div class="dropzone">
-          <font-awesome-icon icon="fa-cloud-arrow-up" class="text-4xl" />
-          <span
-            >Drag file here or
-            <label for="dropzoneFile" class="text-blue-600 underline cursor-pointer"
-              >choose a file</label
-            ></span
-          >
-          <input type="file" id="dropzoneFile" class="hidden" />
+      <div v-if="!isUrlUpload">
+        <div class="dropzone-container" @drop="handleDrop" @dragover="handleDragOver">
+          <div class="dropzone">
+            <font-awesome-icon icon="fa-cloud-arrow-up" class="text-4xl" />
+            <span>
+              Drag files here or
+              <label for="dropzoneFile" class="text-blue-600 underline cursor-pointer">
+                choose files
+              </label>
+            </span>
+            <input
+              type="file"
+              id="dropzoneFile"
+              class="hidden"
+              multiple
+              @change="handleFileChange"
+            />
+          </div>
+        </div>
+        <div class="mt-4 h-32 overflow-y-auto bg-white shadow-md rounded p-4 scrollable-container">
+          <ul>
+            <li
+              v-for="file in selectedFiles"
+              :key="file.name"
+              class="flex items-center justify-between space-x-2"
+            >
+              <div class="flex items-center space-x-2">
+                <span class="text-green-600"
+                  ><font-awesome-icon icon="fa-file" class="text-lg" /></span
+                ><span>{{ file.name }}</span>
+              </div>
+              <button class="text-red-600" @click="removeFile(file)">❌</button>
+            </li>
+          </ul>
         </div>
       </div>
-      <div v-else class="url-container">
-        <input
-          type="text"
-          placeholder="Paste an URL here:"
-          class="border border-gray-300 p-2 w-full"
-        />
+      <div v-else>
+        <div class="url-container">
+          <input
+            type="text"
+            placeholder="Paste URLs here (separated by commas):"
+            class="border border-gray-300 p-2 w-full"
+            @input="handleUrlChange"
+          />
+        </div>
+        <div class="mt-4 h-32 overflow-y-auto bg-white shadow-md rounded p-4 scrollable-container">
+          <ul>
+            <li
+              v-for="url in enteredUrls"
+              :key="url"
+              class="flex items-center justify-between space-x-2"
+            >
+              <div class="flex items-center space-x-2">
+                <span class="text-green-600"
+                  ><font-awesome-icon icon="fa-link" class="text-lg" /></span
+                ><span>{{ url }}</span>
+              </div>
+              <!-- <button class="text-red-600" @click="removeUrl(url)">❌</button> -->
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-    <div class="mt-4">
-      <ul>
-        <li
-          v-for="file in ['REG-Academic-Calendar-2567.pdf', 'REG-Academic-Calendar-2568.pdf']"
-          :key="file"
-          class="flex items-center space-x-2"
-        >
-          <span class="text-green-600">✔️</span><span>{{ file }}</span>
-        </li>
-      </ul>
-    </div>
     <div class="mt-4 text-center">
-      <button class="bg-blue-600 text-white py-2 px-4 rounded">Submit</button>
+      <button class="bg-blue-600 text-white py-2 px-4 rounded" @click="handleSubmit">Submit</button>
     </div>
   </div>
 </template>
@@ -97,5 +173,21 @@ input[type='text'] {
 
 button {
   cursor: pointer;
+}
+
+.scrollable-container {
+  max-height: 8rem;
+  overflow-y: auto;
+}
+
+.scrollable-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scrollable-container li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e5e5;
 }
 </style>

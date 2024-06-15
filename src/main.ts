@@ -12,6 +12,8 @@ import { faHouse } from '@fortawesome/free-solid-svg-icons'
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 import { faFolderTree } from '@fortawesome/free-solid-svg-icons'
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { faLink } from '@fortawesome/free-solid-svg-icons'
+import { faFile } from '@fortawesome/free-solid-svg-icons'
 
 import App from './App.vue'
 import router from './router'
@@ -25,7 +27,9 @@ library.add(
   faHouse,
   faFolderOpen,
   faFolderTree,
-  faCloudArrowUp
+  faCloudArrowUp,
+  faLink,
+  faFile
 )
 
 app.component('font-awesome-icon', FontAwesomeIcon)
