@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
 const props = defineProps({
   label: {
     type: String,
@@ -8,11 +7,21 @@ const props = defineProps({
 })
 </script>
 <template>
-  <div class="relative h-screen">
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="bg-white w-5/6 h-5/6 p-4 shadow-lg rounded-lg">
-        <h1 v-if="label">{{ label }}</h1>
+  <div class="pt-10">
+    <div class="inset-0 flex flex-col justify-center items-center">
+      <div class="zone-card bg-white p-4 shadow-lg rounded-lg">
+        <h1 v-if="label" class="pl-12 text-2xl font-semibold text-gray-500 dark:text-white">
+          {{ label }}
+        </h1>
+
+        <slot></slot>
       </div>
     </div>
   </div>
 </template>
+<style scoped>
+.zone-card {
+  width: 75%;
+  max-height: 75%;
+}
+</style>

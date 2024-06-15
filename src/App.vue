@@ -1,3 +1,4 @@
+<script setup lang="ts"></script>
 <template>
   <!-- Nav bar Start -->
   <nav class="bg-white border-b border-gray-200 shadow-md dark:bg-gray-90">
@@ -44,31 +45,31 @@
       <div class="flex flex-col items-center justify-center h-full">
         <ul class="w-full space-y-2 font-large">
           <li>
-            <a
-              href="#"
+            <RouterLink
+              :to="{ name: 'home' }"
               class="pb-2 flex items-center p-2 text-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
             >
               <font-awesome-icon icon="fa-house" class="text-lg" />
               <span class="ms-3">Home</span>
-            </a>
+            </RouterLink>
           </li>
           <li>
-            <a
-              href="#"
+            <RouterLink
+              :to="{ name: 'upload' }"
               class="pb-2 flex items-center p-2 text-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
             >
               <font-awesome-icon icon="fa-folder-open" class="text-lg" />
               <span class="ms-3">Upload</span>
-            </a>
+            </RouterLink>
           </li>
           <li>
-            <a
-              href="#"
+            <RouterLink
+              :to="{ name: 'manage' }"
               class="pb-2 flex items-center p-2 text-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group focus:border-4 focus:border-r-red-600 focus:bg-gray-100"
             >
               <font-awesome-icon icon="fa-folder-tree" class="text-lg" />
               <span class="ms-3">File Management</span>
-            </a>
+            </RouterLink>
           </li>
         </ul>
       </div>
@@ -80,7 +81,7 @@
     ></label>
     <!-- Main Content Wrapper -->
     <div
-      class="flex-1 transition-opacity duration-500 peer-checked:opacity-50 pointer-events-none peer-checked:pointer-events-auto"
+      class="flex-1 transition-opacity duration-500 peer-checked:opacity-50 peer-checked:pointer-events-auto"
     >
       <RouterView />
     </div>
@@ -95,6 +96,9 @@
   display: block;
 }
 
+.peer-checked:pointer-events-auto {
+  pointer-events: auto;
+}
 .pointer-events-none {
   pointer-events: none;
 }
