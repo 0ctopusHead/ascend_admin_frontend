@@ -1,4 +1,4 @@
-export interface UploadFile {
+export interface File {
   name: string
-  id: number
+  id: string
 }

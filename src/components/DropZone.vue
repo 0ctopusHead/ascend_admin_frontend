@@ -4,6 +4,7 @@ import { ref } from 'vue'
 const isUrlUpload = ref(false)
 const selectedFiles = ref<File[]>([])
 const enteredUrls = ref<string[]>([])
+const newUrl = ref<string>('')
 
 const toggleUploadMethod = (method: boolean) => {
   isUrlUpload.value = method
@@ -17,8 +18,14 @@ const handleFileChange = (event: Event) => {
 }
 
 const handleUrlChange = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  enteredUrls.value = target.value.split(',').map((url) => url.trim())
+  newUrl.value = (event.target as HTMLInputElement).value.trim()
+}
+
+const addUrl = () => {
+  if (newUrl.value) {
+    enteredUrls.value.push(newUrl.value)
+    newUrl.value = ''
+  }
 }
 
 const handleDrop = (event: DragEvent) => {
@@ -44,13 +51,13 @@ const handleSubmit = () => {
   }
 }
 
-const removeFile = (file: File) => {
-  selectedFiles.value = selectedFiles.value.filter((f) => f !== file)
+const removeFile = (index: number) => {
+  selectedFiles.value.splice(index, 1)
 }
 
-// const removeUrl = (url: string) => {
-//   enteredUrls.value = enteredUrls.value.filter((u) => u !== url)
-// }
+const removeUrl = (index: number) => {
+  enteredUrls.value.splice(index, 1)
+}
 </script>
 
 <template>
@@ -94,8 +101,8 @@ const removeFile = (file: File) => {
         <div class="mt-4 h-32 overflow-y-auto bg-white shadow-md rounded p-4 scrollable-container">
           <ul>
             <li
-              v-for="file in selectedFiles"
-              :key="file.name"
+              v-for="(file, index) in selectedFiles"
+              :key="index"
               class="flex items-center justify-between space-x-2"
             >
               <div class="flex items-center space-x-2">
@@ -103,25 +110,29 @@ const removeFile = (file: File) => {
                   ><font-awesome-icon icon="fa-file" class="text-lg" /></span
                 ><span>{{ file.name }}</span>
               </div>
-              <button class="text-red-600" @click="removeFile(file)">❌</button>
+              <button class="text-red-600" @click="removeFile(index)">❌</button>
             </li>
           </ul>
         </div>
       </div>
       <div v-else>
-        <div class="url-container">
+        <div class="url-container flex items-center">
           <input
             type="text"
-            placeholder="Paste URLs here (separated by commas):"
-            class="border border-gray-300 p-2 w-full"
+            placeholder="Paste URL here:"
+            class="border border-gray-300 p-2 flex-grow"
+            v-model="newUrl"
             @input="handleUrlChange"
           />
+          <button class="bg-rose-400 text-white py-2 px-4 mt-2 mb-2 ml-2 rounded" @click="addUrl">
+            <font-awesome-icon icon="fa-cloud-arrow-up" class="text-lg" />
+          </button>
         </div>
         <div class="mt-4 h-32 overflow-y-auto bg-white shadow-md rounded p-4 scrollable-container">
           <ul>
             <li
-              v-for="url in enteredUrls"
-              :key="url"
+              v-for="(url, index) in enteredUrls"
+              :key="index"
               class="flex items-center justify-between space-x-2"
             >
               <div class="flex items-center space-x-2">
@@ -129,14 +140,16 @@ const removeFile = (file: File) => {
                   ><font-awesome-icon icon="fa-link" class="text-lg" /></span
                 ><span>{{ url }}</span>
               </div>
-              <!-- <button class="text-red-600" @click="removeUrl(url)">❌</button> -->
+              <button class="text-red-600" @click="removeUrl(index)">❌</button>
             </li>
           </ul>
         </div>
       </div>
     </div>
     <div class="mt-4 text-center">
-      <button class="bg-blue-600 text-white py-2 px-4 rounded" @click="handleSubmit">Submit</button>
+      <button class="bg-green-600 text-white py-2 px-4 rounded" @click="handleSubmit">
+        Submit
+      </button>
     </div>
   </div>
 </template>

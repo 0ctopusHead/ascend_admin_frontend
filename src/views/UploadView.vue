@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import DropZone from '../components/DropZone.vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
-
-let dropzoneFile = ref('')
 </script>
 
 <template>
