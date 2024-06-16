@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
+import FileService from '../services/FileService'
+import type { File } from '@/type'
 
-const files = ref([
-  { id: 1, name: 'REG-Academic-Calendar-2567.pdf' },
-  { id: 2, name: 'REG-Academic-Calendar-2568.pdf' },
-  { id: 3, name: 'REG-Academic-Calendar-2567.pdf' },
-  { id: 4, name: 'REG-Academic-Calendar-2567.pdf' },
-  { id: 5, name: 'REG-Academic-Calendar-2567.pdf' },
-  { id: 6, name: 'REG-Academic-Calendar-2567.pdf' },
-  { id: 7, name: 'REG-Academic-Calendar-2567.pdf' }
-])
-const selectedFiles = ref<number[]>([])
+const files = ref<File[]>([])
+const selectedFiles = ref<string[]>([])
 
-const toggleFileSelection = (fileId: number) => {
+const fetchFiles = async () => {
+  try {
+    const response = await FileService.getFiles()
+    files.value = response.data
+  } catch (error) {
+    console.error('Error fetching files:', error)
+  }
+}
+
+const toggleFileSelection = (fileId: string) => {
   const index = selectedFiles.value.indexOf(fileId)
   if (index === -1) {
     selectedFiles.value.push(fileId)
@@ -22,7 +25,7 @@ const toggleFileSelection = (fileId: number) => {
   }
 }
 
-const isSelected = (fileId: number) => {
+const isSelected = (fileId: string) => {
   return selectedFiles.value.includes(fileId)
 }
 
@@ -30,15 +33,21 @@ const toggleSelectAll = () => {
   if (selectedFiles.value.length === files.value.length) {
     selectedFiles.value = []
   } else {
-    selectedFiles.value = files.value.map((file) => file.id)
+    selectedFiles.value = files.value.map((file) => file._id)
   }
 }
 
-const deleteSelectedFiles = () => {
-  console.log('Deleting files with IDs:', selectedFiles.value)
-  files.value = files.value.filter((file) => !selectedFiles.value.includes(file.id))
-  selectedFiles.value = []
+const deleteSelectedFiles = async () => {
+  try {
+    await FileService.deleteByIds(selectedFiles.value)
+    fetchFiles()
+    selectedFiles.value = []
+  } catch (error) {
+    console.error('Error deleting files:', error)
+  }
 }
+
+onMounted(fetchFiles)
 </script>
 
 <template>
@@ -61,15 +70,15 @@ const deleteSelectedFiles = () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="file in files" :key="file.id">
-              <td class="file-id">{{ file.id }}</td>
-              <td class="file-name">{{ file.name }}</td>
+            <tr v-for="file in files" :key="file._id">
+              <td class="file-id">{{ file._id }}</td>
+              <td class="file-name">{{ file.file_name }}</td>
               <td class="file-select">
                 <input
                   type="checkbox"
-                  :value="file.id"
-                  @change="toggleFileSelection(file.id)"
-                  :checked="isSelected(file.id)"
+                  :value="file._id"
+                  @change="toggleFileSelection(file._id)"
+                  :checked="isSelected(file._id)"
                 />
               </td>
             </tr>

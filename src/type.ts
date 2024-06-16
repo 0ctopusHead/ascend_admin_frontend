@@ -1,4 +1,4 @@
 export interface File {
-  name: string
-  id: string
+  file_name: string
+  _id: string
 }

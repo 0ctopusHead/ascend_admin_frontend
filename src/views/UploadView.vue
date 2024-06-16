@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import DropZone from '../components/DropZone.vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
 </script>
