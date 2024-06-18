@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import FileService from '@/services/FileService'
 
 const isUrlUpload = ref(false)
 const selectedFiles = ref<File[]>([])
@@ -39,13 +40,22 @@ const handleDragOver = (event: DragEvent) => {
   event.preventDefault()
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!isUrlUpload.value && selectedFiles.value.length > 0) {
-    console.log('Files submitted:', selectedFiles.value)
-    // Handle file submission logic here
+    try {
+      await FileService.uploadByBrowse(selectedFiles.value)
+      console.log('Files submitted:', selectedFiles.value)
+    } catch (error) {
+      console.log(selectedFiles.value)
+      console.error('Error submitting files:', error)
+    }
   } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
-    console.log('URLs submitted:', enteredUrls.value)
-    // Handle URL submission logic here
+    try {
+      await FileService.uploadByUrls(enteredUrls.value)
+      console.log('URLs submitted:', enteredUrls.value)
+    } catch (error) {
+      console.error('Error submitting URLs:', error)
+    }
   } else {
     console.log('No valid input to submit')
   }

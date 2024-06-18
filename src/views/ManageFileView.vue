@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
 import FileService from '../services/FileService'
-import type { File } from '@/type'
+import type { Database_File } from '@/type'
 
-const files = ref<File[]>([])
+const files = ref<Database_File[]>([])
 const selectedFiles = ref<string[]>([])
 
 const fetchFiles = async () => {
