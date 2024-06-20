@@ -109,6 +109,7 @@ onMounted(fetchFiles)
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
+  overflow-x: auto; /* Ensure the table is scrollable on small screens */
 }
 
 .file-table {
@@ -157,5 +158,36 @@ onMounted(fetchFiles)
 .delete-button:disabled {
   background-color: #f5b5b5;
   cursor: not-allowed;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .file-table th,
+  .file-table td {
+    padding: 8px;
+  }
+
+  .delete-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-table th.file-id,
+  .file-table td.file-id {
+    display: none; /* Hide the ID column on very small screens */
+  }
+
+  .file-table th.file-name,
+  .file-table td.file-name {
+    width: 80%;
+  }
+
+  .file-table th.file-select,
+  .file-table td.file-select {
+    width: 20%;
+  }
 }
 </style>
