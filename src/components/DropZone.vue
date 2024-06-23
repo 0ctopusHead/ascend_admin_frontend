@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import FileService from '@/services/FileService'
 import Swal, { type SweetAlertOptions } from 'sweetalert2'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const isUrlUpload = ref(false)
 const selectedFiles = ref<File[]>([])
 const enteredUrls = ref<string[]>([])
@@ -59,6 +61,7 @@ const handleSubmit = () => {
               console.log('Files submitted:', selectedFiles.value)
               selectedFiles.value = []
               Swal.fire('Upload Success', '', 'success')
+              router.push({ name: 'manage' })
             })
             .catch((error) => {
               console.log(error.response.data)
@@ -77,6 +80,7 @@ const handleSubmit = () => {
           console.log('URL submitted:', enteredUrls.value)
           enteredUrls.value = []
           Swal.fire('Upload Success', '', 'success')
+          router.push({ name: 'manage' })
         })
         .catch((error) => {
           Swal.fire(error.response.data, '', 'error')
