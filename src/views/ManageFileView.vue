@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
 import FileService from '../services/FileService'
 import type { Database_File } from '@/type'
-
+import Swal, { type SweetAlertOptions } from 'sweetalert2'
 const files = ref<Database_File[]>([])
 const selectedFiles = ref<string[]>([])
+const props = defineProps({
+  page: {
+    type: Number,
+    required: true
+  }
+})
+const currentPage = ref<number>(props.page)
+const pageSize = ref<number>(2)
+const totalFiles = ref<number>(0)
 
-const fetchFiles = async () => {
+const fetchFiles = async (page: number = 1) => {
   try {
-    const response = await FileService.getFiles()
+    const response = await FileService.getFiles(page, pageSize.value)
     files.value = response.data
+    totalFiles.value = parseInt(response.headers['x-total-count'], 10)
+    console.log('Total Files:', totalFiles.value)
   } catch (error) {
     console.error('Error fetching files:', error)
   }
@@ -39,15 +50,44 @@ const toggleSelectAll = () => {
 
 const deleteSelectedFiles = async () => {
   try {
-    await FileService.deleteByIds(selectedFiles.value)
-    fetchFiles()
-    selectedFiles.value = []
+    Swal.fire({
+      title: 'Delete files?',
+      text: 'The file(s) will be delete from the database',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+    } as SweetAlertOptions).then(async (result) => {
+      if (result.value) {
+        await FileService.deleteByIds(selectedFiles.value)
+          .then((respose) => {
+            fetchFiles(currentPage.value)
+            selectedFiles.value = []
+            Swal.fire('Deleted!', 'Your selected files was successfully deleted.', 'success')
+          })
+          .catch((error) => {
+            Swal.fire(error.response.data, '', 'error')
+          })
+      }
+    })
   } catch (error) {
     console.error('Error deleting files:', error)
   }
 }
 
-onMounted(fetchFiles)
+const handlePageChange = (newPage: number) => {
+  currentPage.value = newPage
+  fetchFiles(newPage)
+}
+
+const hasNextPage = computed(() => {
+  const totalPages = Math.ceil(totalFiles.value / pageSize.value)
+  console.log('Total Pages:', totalPages)
+  return currentPage.value < totalPages
+})
+
+onMounted(() => fetchFiles(currentPage.value))
 </script>
 
 <template>
@@ -93,6 +133,15 @@ onMounted(fetchFiles)
             Delete
           </button>
         </div>
+        <div class="pagination-container">
+          <button @click="handlePageChange(currentPage - 1)" :disabled="currentPage === 1">
+            <font-awesome-icon icon="fa-chevron-left" class="text-lg" />
+          </button>
+          <span>Page {{ currentPage }}</span>
+          <button @click="handlePageChange(currentPage + 1)" :disabled="!hasNextPage">
+            <font-awesome-icon icon="fa-chevron-right" class="text-lg" />
+          </button>
+        </div>
       </div>
     </ConcreteZoneComponent>
   </body>
@@ -109,6 +158,7 @@ onMounted(fetchFiles)
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
+  overflow-x: auto; /* Ensure the table is scrollable on small screens */
 }
 
 .file-table {
@@ -157,5 +207,62 @@ onMounted(fetchFiles)
 .delete-button:disabled {
   background-color: #f5b5b5;
   cursor: not-allowed;
+}
+
+.pagination-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.pagination-container button {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pagination-container button:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
+.pagination-container span {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .file-table th,
+  .file-table td {
+    padding: 8px;
+  }
+
+  .delete-button,
+  .pagination-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-table th.file-id,
+  .file-table td.file-id {
+    display: none;
+  }
+
+  .file-table th.file-name,
+  .file-table td.file-name {
+    width: 80%;
+  }
+
+  .file-table th.file-select,
+  .file-table td.file-select {
+    width: 20%;
+  }
 }
 </style>
