@@ -73,6 +73,14 @@ const handleSubmit = () => {
   } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
     try {
       FileService.uploadByUrls(enteredUrls.value)
+        .then((response) => {
+          console.log('URL submitted:', enteredUrls.value)
+          enteredUrls.value = []
+          Swal.fire('Upload Success', '', 'success')
+        })
+        .catch((error) => {
+          Swal.fire(error.response.data, '', 'error')
+        })
       console.log('URLs submitted:', enteredUrls.value)
     } catch (error) {
       console.error('Error submitting URLs:', error)
