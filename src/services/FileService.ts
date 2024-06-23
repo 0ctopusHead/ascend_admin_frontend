@@ -3,8 +3,8 @@ import type { Database_File } from '@/type'
 import apiClient from './AxiosClient'
 
 export default {
-  getFiles(): Promise<AxiosResponse<Database_File[]>> {
-    return apiClient.get<Database_File[]>('/get_files')
+  getFiles(page: Number, limit: Number): Promise<AxiosResponse<Database_File[]>> {
+    return apiClient.get<Database_File[]>('/get_files?_limit=' + limit + '&_page=' + page)
   },
   deleteByIds(_id: String[]): Promise<AxiosResponse> {
     return apiClient.post('/delete_by_id', { _id })
