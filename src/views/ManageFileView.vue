@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import ConcreteZoneComponent from '../components/ConcreteZoneComponent.vue'
 import FileService from '../services/FileService'
 import type { Database_File } from '@/type'
-
+import Swal, { type SweetAlertOptions } from 'sweetalert2'
 const files = ref<Database_File[]>([])
 const selectedFiles = ref<string[]>([])
 const props = defineProps({
@@ -50,9 +50,27 @@ const toggleSelectAll = () => {
 
 const deleteSelectedFiles = async () => {
   try {
-    await FileService.deleteByIds(selectedFiles.value)
-    fetchFiles(currentPage.value)
-    selectedFiles.value = []
+    Swal.fire({
+      title: 'Delete files?',
+      text: 'The file(s) will be delete from the database',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+    } as SweetAlertOptions).then(async (result) => {
+      if (result.value) {
+        await FileService.deleteByIds(selectedFiles.value)
+          .then((respose) => {
+            fetchFiles(currentPage.value)
+            selectedFiles.value = []
+            Swal.fire('Deleted!', 'Your selected files was successfully deleted.', 'success')
+          })
+          .catch((error) => {
+            Swal.fire(error.response.data, '', 'error')
+          })
+      }
+    })
   } catch (error) {
     console.error('Error deleting files:', error)
   }
