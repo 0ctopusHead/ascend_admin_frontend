@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import FileService from '@/services/FileService'
-
+import Swal, { type SweetAlertOptions } from 'sweetalert2'
 const isUrlUpload = ref(false)
 const selectedFiles = ref<File[]>([])
 const enteredUrls = ref<string[]>([])
@@ -40,24 +40,43 @@ const handleDragOver = (event: DragEvent) => {
   event.preventDefault()
 }
 
-const handleSubmit = async () => {
-  if (!isUrlUpload.value && selectedFiles.value.length > 0) {
+const handleSubmit = () => {
+  if (!isUrlUpload.value) {
     try {
-      await FileService.uploadByBrowse(selectedFiles.value)
-      console.log('Files submitted:', selectedFiles.value)
+      Swal.fire({
+        title: 'Submit files',
+        text: 'The file(s) will be upload into the system',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!'
+      } as SweetAlertOptions).then((result) => {
+        if (result.value) {
+          console.log(result.value)
+          FileService.uploadByBrowse(selectedFiles.value)
+            .then((response) => {
+              console.log('Files submitted:', selectedFiles.value)
+              selectedFiles.value = []
+              Swal.fire('Upload Success', '', 'success')
+            })
+            .catch((error) => {
+              console.log(error.response.data)
+              Swal.fire(error.response.data, '', 'error')
+            })
+        }
+      })
     } catch (error) {
       console.log(selectedFiles.value)
       console.error('Error submitting files:', error)
     }
   } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
     try {
-      await FileService.uploadByUrls(enteredUrls.value)
+      FileService.uploadByUrls(enteredUrls.value)
       console.log('URLs submitted:', enteredUrls.value)
     } catch (error) {
       console.error('Error submitting URLs:', error)
     }
-  } else {
-    console.log('No valid input to submit')
   }
 }
 
