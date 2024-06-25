@@ -11,9 +11,8 @@ export default {
   },
   uploadByBrowse(files: File[]): Promise<AxiosResponse> {
     const formData = new FormData()
-    files.forEach((file, index) => {
-      const uniqueFileName = index + `${Date.now()}_${file.name}` // Append timestamp to ensure uniqueness
-      formData.append('files', file, uniqueFileName)
+    files.forEach((file) => {
+      formData.append('files', file)
     })
     return apiClient.post('/upload', formData, {
       headers: {

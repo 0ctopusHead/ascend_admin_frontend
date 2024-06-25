@@ -57,7 +57,7 @@ const handleSubmit = () => {
         if (result.value) {
           console.log(result.value)
           FileService.uploadByBrowse(selectedFiles.value)
-            .then((response) => {
+            .then(() => {
               console.log('Files submitted:', selectedFiles.value)
               selectedFiles.value = []
               Swal.fire('Upload Success', '', 'success')
@@ -76,7 +76,7 @@ const handleSubmit = () => {
   } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
     try {
       FileService.uploadByUrls(enteredUrls.value)
-        .then((response) => {
+        .then(() => {
           console.log('URL submitted:', enteredUrls.value)
           enteredUrls.value = []
           Swal.fire('Upload Success', '', 'success')

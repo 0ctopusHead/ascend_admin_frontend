@@ -61,7 +61,7 @@ const deleteSelectedFiles = async () => {
     } as SweetAlertOptions).then(async (result) => {
       if (result.value) {
         await FileService.deleteByIds(selectedFiles.value)
-          .then((respose) => {
+          .then(() => {
             fetchFiles(currentPage.value)
             selectedFiles.value = []
             Swal.fire('Deleted!', 'Your selected files was successfully deleted.', 'success')
