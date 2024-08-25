@@ -3,11 +3,14 @@ import { ref } from 'vue'
 import FileService from '@/services/FileService'
 import Swal, { type SweetAlertOptions } from 'sweetalert2'
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 const isUrlUpload = ref(false)
 const selectedFiles = ref<File[]>([])
 const enteredUrls = ref<string[]>([])
 const newUrl = ref<string>('')
+
+const loading = ref(false)
 
 const toggleUploadMethod = (method: boolean) => {
   isUrlUpload.value = method
@@ -46,38 +49,48 @@ const handleSubmit = () => {
   if (!isUrlUpload.value) {
     try {
       Swal.fire({
-        title: 'Submit files',
-        text: 'The file(s) will be upload into the system',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes!'
-      } as SweetAlertOptions).then((result) => {
-        if (result.value) {
-          console.log(result.value)
-          FileService.uploadByBrowse(selectedFiles.value)
-            .then(() => {
-              console.log('Files submitted:', selectedFiles.value)
-              selectedFiles.value = []
-              Swal.fire('Upload Success', '', 'success')
-              router.push({ name: 'manage' })
-            })
-            .catch((error) => {
-              console.log(error.response.data)
-              Swal.fire(error.response.data, '', 'error')
-            })
+        title: 'Submitting files...',
+        text: 'Please wait while the files are being uploaded',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
         }
       })
+
+      loading.value = true 
+      FileService.uploadByBrowse(selectedFiles.value)
+        .then(() => {
+          console.log('Files submitted:', selectedFiles.value)
+          selectedFiles.value = []
+          Swal.fire('Upload Success', '', 'success')
+          router.push({ name: 'manage' })
+        })
+        .catch((error) => {
+          console.log(error.response.data)
+          Swal.fire(error.response.data, '', 'error')
+        })
+        .finally(() => {
+          loading.value = false
+        })
     } catch (error) {
       console.log(selectedFiles.value)
       console.error('Error submitting files:', error)
     }
-  } else if (isUrlUpload.value && enteredUrls.value.length > 0) {
+  } else if (isUrlUpload.value) {
     try {
+      Swal.fire({
+        title: 'Submitting URLs...',
+        text: 'Please wait while the URLs are being uploaded',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
+      loading.value = true
       FileService.uploadByUrls(enteredUrls.value)
         .then(() => {
-          console.log('URL submitted:', enteredUrls.value)
+          console.log('URLs submitted:', enteredUrls.value)
           enteredUrls.value = []
           Swal.fire('Upload Success', '', 'success')
           router.push({ name: 'manage' })
@@ -85,7 +98,9 @@ const handleSubmit = () => {
         .catch((error) => {
           Swal.fire(error.response.data, '', 'error')
         })
-      console.log('URLs submitted:', enteredUrls.value)
+        .finally(() => {
+          loading.value = false
+        })
     } catch (error) {
       console.error('Error submitting URLs:', error)
     }
@@ -100,6 +115,7 @@ const removeUrl = (index: number) => {
   enteredUrls.value.splice(index, 1)
 }
 </script>
+
 
 <template>
   <div class="container mx-auto mt-10">

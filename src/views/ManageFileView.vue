@@ -13,14 +13,14 @@ const props = defineProps({
   }
 })
 const currentPage = ref<number>(props.page)
-const pageSize = ref<number>(2)
+const pageSize = ref<number>(7)
 const totalFiles = ref<number>(0)
 
 const fetchFiles = async (page: number = 1) => {
   try {
     const response = await FileService.getFiles(page, pageSize.value)
     files.value = response.data
-    totalFiles.value = parseInt(response.headers['x-total-count'], 10)
+    totalFiles.value = parseInt(response.headers['x-total-count'])
     console.log('Total Files:', totalFiles.value)
   } catch (error) {
     console.error('Error fetching files:', error)
@@ -52,7 +52,7 @@ const deleteSelectedFiles = async () => {
   try {
     Swal.fire({
       title: 'Delete files?',
-      text: 'The file(s) will be delete from the database',
+      text: 'The file(s) will be deleted from the database',
       icon: 'question',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -60,14 +60,26 @@ const deleteSelectedFiles = async () => {
       confirmButtonText: 'Yes!'
     } as SweetAlertOptions).then(async (result) => {
       if (result.value) {
+        Swal.fire({
+          title: 'Deleting files...',
+          text: 'Please wait while the files are being deleted',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading()
+          }
+        })
+
         await FileService.deleteByIds(selectedFiles.value)
           .then(() => {
             fetchFiles(currentPage.value)
             selectedFiles.value = []
-            Swal.fire('Deleted!', 'Your selected files was successfully deleted.', 'success')
+            Swal.fire('Deleted!', 'Your selected files were successfully deleted.', 'success')
           })
           .catch((error) => {
             Swal.fire(error.response.data, '', 'error')
+          })
+          .finally(() => {
+            Swal.close()
           })
       }
     })
