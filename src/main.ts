@@ -15,14 +15,15 @@ import { faFolderTree } from '@fortawesome/free-solid-svg-icons'
 import { faCloudArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { faLink } from '@fortawesome/free-solid-svg-icons'
 import { faFile } from '@fortawesome/free-solid-svg-icons'
-import { faChevronCircleRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronCircleRight, faChevronLeft, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 
 import App from './App.vue'
 import router from './router'
-
+import GStore from './store'
 const app = createApp(App)
 
 library.add(
+  faRightToBracket,
   faUser,
   faRightFromBracket,
   faChevronRight,
@@ -41,3 +42,4 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+app.provide('GStore', GStore)

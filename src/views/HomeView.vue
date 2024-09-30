@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { isLoggedIn } from '@/stores/auteStore'  // Import the shared login state
+</script>
 
 <template>
   <body>
@@ -10,7 +12,10 @@
             Quickly upload the file or link with our simple drag-and-drop interface. Rest easy
             knowing your files are stored safely. We prioritize privacy and security.
           </p>
-          <RouterLink :to="{ name: 'upload' }"> <button>LET'S START</button></RouterLink>
+          <!-- Conditionally render the "LET'S START" button based on the login status -->
+          <RouterLink v-if="isLoggedIn" :to="{ name: 'upload' }">
+            <button>LET'S START</button>
+          </RouterLink>
         </div>
         <div class="hero-image">
           <img src="../assets/home_pic.png" alt="Illustration" />
@@ -19,7 +24,10 @@
     </main>
   </body>
 </template>
+
+
 <style scoped>
+/* Your existing CSS */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
